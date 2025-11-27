@@ -11,10 +11,14 @@ import java.util.List;
 import com.example.model.User;
 
 public class UserDAO {
-    private String jdbcURL = "jdbc:mysql://localhost:3306/demo?useSSL=false";
-    // Use a dedicated app user instead of root. We'll create this database user locally.
-    private String jdbcUsername = "app";
-    private String jdbcPassword = "password";
+    // Read connection parameters from environment variables when available to avoid committing secrets.
+    // Set these in your shell or service manager before starting the app, for example:
+    // export JDBC_URL="jdbc:mysql://localhost:3306/demo?useSSL=false"
+    // export JDBC_USER=app
+    // export JDBC_PASS=password
+    private String jdbcURL = System.getenv().getOrDefault("JDBC_URL", "jdbc:mysql://localhost:3306/demo?useSSL=false");
+    private String jdbcUsername = System.getenv().getOrDefault("JDBC_USER", "app");
+    private String jdbcPassword = System.getenv().getOrDefault("JDBC_PASS", "password");
 
     private static final String INSERT_USERS_SQL = "INSERT INTO users" + "  (name, email, country) VALUES " + " (?, ?, ?);";
     private static final String SELECT_USER_BY_ID = "select id,name,email,country from users where id =?";
